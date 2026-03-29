@@ -3,6 +3,7 @@ import 'package:melo/music_screen.dart';
 import 'package:melo/music_service.dart';
 import 'package:melo/song_modele.dart';
 import 'package:melo/song_title.dart';
+import 'package:melo/mini_player.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadSong(); 
+    _loadSong();
   }
 
   Future<void> _loadSong() async {
@@ -73,55 +74,48 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   )
                 : _songs.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.music_off, size: 80, color: Colors.grey),
-                            SizedBox(height: 16),
-                            Text(
-                              "No songs found",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                              ),
-                            ),
-                            SizedBox(height: 16), // ✅ comma was missing here
-                            ElevatedButton(
-                              onPressed: _loadSong, // ✅ no parentheses
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.purple, // ✅ fixed typo
-                                foregroundColor: Colors.white,
-                              ),
-                              child: Text("Scan Again"),
-                            ),
-                          ],
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.music_off, size: 80, color: Colors.grey),
+                        SizedBox(height: 16),
+                        Text(
+                          "No songs found",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
-                      )
-                    : ListView.builder( 
-                        padding: EdgeInsets.all(16),
-                        itemCount: _songs.length,
-                        itemBuilder: (context, index) {
-                          return SongTitle(
-                            song: _songs[index],
-                            isPlaying: _musicService.currentIndex == index, 
-                            onTap: () => _onSongTap(index),
-                          );
-                        },
-                      ),
+                        SizedBox(height: 16), // ✅ comma was missing here
+                        ElevatedButton(
+                          onPressed: _loadSong, // ✅ no parentheses
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.purple, // ✅ fixed typo
+                            foregroundColor: Colors.white,
+                          ),
+                          child: Text("Scan Again"),
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.all(16),
+                    itemCount: _songs.length,
+                    itemBuilder: (context, index) {
+                      return SongTitle(
+                        song: _songs[index],
+                        isPlaying: _musicService.currentIndex == index,
+                        onTap: () => _onSongTap(index),
+                      );
+                    },
+                  ),
           ),
-         
-        //  if(_musicService.currentSong !=null)
-        //  miniplayer(
-        //   onTap:_openMusicScreen,
-        //   onplaypouse:()async{
-        //     await _musicService.playPause();
-        //     setState(() {
-              
-        //     });
-        //   }
-        //  )
 
+          if (_musicService.currentSong != null)
+            MiniPlayer(
+              onTap: () => _openMusicScreen(context),
+              onPlayPause: () {
+                setState(() {});
+              },
+            ),
         ],
       ),
     );
